@@ -7,4 +7,5 @@
                  [ring/ring-core "1.1.7"]
                  [torpo "0.1"]
                  [shaky "0.1"]]
-  :profiles {:dev {:dependencies [[midje "1.5.0"]]}})
+  :profiles {:dev {:dependencies [[midje "1.5.0"]]}}
+  :scm {:name "git" :url "https://github.com/molst/treq"})
