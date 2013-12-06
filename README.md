@@ -23,8 +23,8 @@ Example response. The initial resolution and the resulting resolution has the sa
 Example of tree request to function mappings. These mappings are called resolvers:
 ```clj
 (defn resolvers [db-conn]
-    [{:locations [[:set-member]]
-      :access-fns [(fn [resolution nickname] (db/set-member db-conn nickname)]}
+    [{:locations [[:set-member]] ;a vector of locations in the resolution map structure on which this resolver knows how to resolve the data
+      :access-fns [(fn [resolution nickname] (db/set-member db-conn nickname)]} ;a vector of functions that can convert the source data to result data - if a function returns nil, the next will be tried
       
      {:locations [[:get-members]]
       :access-fns [(fn [resolution nicknames] (db/get-members db-conn nicknames)]}
