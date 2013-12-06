@@ -1,7 +1,7 @@
 treq resolves an [edn](https://github.com/edn-format/edn) tree of requests into function calls. This is useful when implementing servers that can serve an arbitrary combination of all the requests it supports at once, in order to minimize the number of ajax requests required to fulfil a higher order task.
 
 Simple example request (could be big, deep and nested). This kind of structure is called a 'resolution' throughout the library:
-```
+```clj
 (def initial-resolution
     {:source
         {:set-member {:person/nickname "frodo"}
@@ -9,7 +9,7 @@ Simple example request (could be big, deep and nested). This kind of structure i
          :get-lock "aaa"}})
 ```
 Example response. The initial resolution and the resulting resolution has the same structure, which makes composition of many resolve operations easy.:
-```
+```clj
 {:source
     {:set-member {:person/nickname "frodo"}
      :get-members ["gandalf", "smeagol"]
@@ -21,7 +21,7 @@ Example response. The initial resolution and the resulting resolution has the sa
     {:get-lock [{:message "aaa not found" :tags #{:db :not-found}}]}}
 ```
 Example of tree request to function mappings. These mappings are called resolvers:
-```
+```clj
 (defn resolvers [db-conn]
     [{:locations [[:set-member]]
       :access-fns [(fn [resolution nickname] (db/set-member db-conn nickname)]}
@@ -33,7 +33,7 @@ Example of tree request to function mappings. These mappings are called resolver
       :access-fns [(fn [resolution token] (db/get-lock db-conn token)]}])
 ```
 This is how the core functionality of the library is used:
-```
+```clj
 (:require [treq.core :as t])
 (t/resolve initial-resolution resolvers) ;print, store, forward, or do some action using the result
 ```
@@ -53,7 +53,7 @@ Developed primarily for my personal use. Anything can change without notice.
 [Treq on Clojars](https://clojars.org/treq). If you are using Maven, add the following repository
 definition to your `pom.xml`:
 
-``` xml
+```xml
 <repository>
   <id>clojars.org</id>
   <url>http://clojars.org/repo</url>
