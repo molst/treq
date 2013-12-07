@@ -14,7 +14,7 @@ For more complicated models, treq can resolve an arbitrary amount of nested requ
 http://localhost/?a-resource=1&a-nested-resource={"resourceA" 1 "resourceB" {"resourceB1" 1 "resourceB2" 2}}
 ```
 
-Below is a simple example request. The source part could be retrieved from a request like the one above. This kind of structure is called a 'resolution' throughout the library. treq has helper functions that makes it very easy to convert a HTTP request params to this kind of structure:
+Below is a simple example request expressed as a 'resolution' data structure. The source part could easily be retrieved from a request uri like the one above using treq helper functions. This kind of structure is called a 'resolution' throughout the library:
 ```clj
 (def initial-resolution
     {:source
@@ -22,7 +22,7 @@ Below is a simple example request. The source part could be retrieved from a req
          :get-members ["gandalf", "smeagol"]
          :get-lock "aaa"}})
 ```
-Example response. The initial resolution and the resulting resolution has the same structure, which makes composition of many resolve operations easy.:
+Example response. The initial resolution and the resulting resolution has the same structure, which makes composition of many resolve operations easy:
 ```clj
 {:source
     {:set-member {:person/nickname "frodo"}
