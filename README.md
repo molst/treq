@@ -1,6 +1,20 @@
 treq resolves an [edn](https://github.com/edn-format/edn) tree of requests into function calls. This is useful when implementing servers that can serve an arbitrary combination of all the requests it supports at once, in order to minimize the number of ajax requests required to fulfil a higher order task.
 
-Simple example request (could be big, deep and nested). This kind of structure is called a 'resolution' throughout the library:
+If you need two entities from a system in a client, you might chain two REST requests like this:
+```
+http://localhost/a-resource/1
+http://localhost/any-other-resource/1
+```
+Two requests is not optimal, especially in mobile scenarios with high request latency. treq formalizes how to request both at once, and makes it super-easy to support it on the server side. The requests can then look like this instead, assuming that the server is serves treq requests at the root uri level:
+```
+http://localhost/?a-resource=1&any-other-resource=1
+```
+For more complicated models, treq can resolve an arbitrary amount of nested requests:
+```
+http://localhost/?a-resource=1&a-nested-resource={"resourceA" 1 "resourceB" {"resourceB1" 1 "resourceB2" 2}}
+```
+
+Simple example request. This kind of structure is called a 'resolution' throughout the library:
 ```clj
 (def initial-resolution
     {:source
