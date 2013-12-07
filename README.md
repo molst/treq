@@ -5,7 +5,7 @@ If you need two entities from a system in a client, you might chain two REST req
 http://localhost/a-resource/1
 http://localhost/any-other-resource/1
 ```
-Two requests is not optimal, especially in mobile scenarios with high request latency. treq formalizes how to request both at once, and makes it super-easy to support it on the server side. The requests can then look like this instead, assuming that the server is serves treq requests at the root uri level:
+Making two requests is not optimal, especially in mobile scenarios with high request latency. treq formalizes how to request both at once, and makes it super-easy to support it on the server side. The requests can then look like this instead, assuming that the server serves treq requests at the root uri level:
 ```
 http://localhost/?a-resource=1&any-other-resource=1
 ```
@@ -14,7 +14,7 @@ For more complicated models, treq can resolve an arbitrary amount of nested requ
 http://localhost/?a-resource=1&a-nested-resource={"resourceA" 1 "resourceB" {"resourceB1" 1 "resourceB2" 2}}
 ```
 
-Simple example request. This kind of structure is called a 'resolution' throughout the library:
+Below is a simple example request. The source part could be retrieved from a request like the one above. This kind of structure is called a 'resolution' throughout the library. treq has helper functions that makes it very easy to convert a HTTP request params to this kind of structure:
 ```clj
 (def initial-resolution
     {:source
