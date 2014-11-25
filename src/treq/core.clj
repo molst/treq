@@ -8,8 +8,7 @@
 
 
 (defn pick "Currently assumes that 'uri' is flat (does not contain a :source key)."
-  [remoting-fn uri pick-map]
-  (:pick (:result (remoting-fn (uri/prepare-for-transmission (uri/merge uri {:params {:pick pick-map}}))))))
+  [remoting-fn uri pick-map] (:pick (:result (remoting-fn (uri/merge uri {:params {:pick pick-map}})))))
 
 
 
@@ -44,10 +43,19 @@
   (reduce (fn [resolution {:keys [locations insert-fn access-fns]}]
             (reduce (fn [res location]
                       (if-let [selector (find-selector resolution location)]
-                        (if-let [access-fn-result (first (drop-while nil? (map #(% resolution selector) access-fns)))]
-                          ;;access-fn-result should be associative to avoid exceptions when associng in deeply
-                          (update-in res [:result] #((or insert-fn assoc-in) % location access-fn-result))
-                          (update-in res [:errors] #((or insert-fn assoc-in) % location {:errors :access-function-did-not-return-any-data})))
+                        (let [{:keys [result error] :as access-fn-result}
+                              (first (drop-while #(not (find % :result))
+                                                 (map (fn [access-fn]
+                                                        (try {:result (access-fn res selector)}
+                                                             (catch Exception e
+                                                               {:error {:tags [:treq/access-fn] :message (str "Failed to apply access function for selector '" selector "', exception: " e)}})))
+                                                      access-fns)))]
+                          (cond
+                           result (update-in res [:result] #((or insert-fn assoc-in) % location result))
+                           error  (update-in res [:errors] #((or insert-fn assoc-in) % location error))
+                           :else  (update-in res [:errors] #((or insert-fn assoc-in) % location
+                                                             [{:tags [:treq/access-fn :treq/missing-result]
+                                                               :message (str "No access function for selector '" selector "' returned a result.")}]))))
                         res))
                     resolution
                     locations))
