@@ -1,7 +1,8 @@
 (ns treq.core
   (:refer-clojure :exclude [resolve])
-  (:require [torpo.uri :as uri])
-  (:require [shaky.core :as shaky]))
+  (:require [clojure.edn :as edn]
+            [torpo.uri :as uri]
+            [shaky.core :as shaky]))
 
 
 
@@ -16,7 +17,9 @@
 
 (defn ring-request-to-resolution "Converts :params of raw-ring-req to a resolution where the params are the :source."
   [raw-ring-req]
-  (let [parsed-params (-> (:params raw-ring-req) shaky/parse-request-params)
+  (let [parsed-params (if (= "text/plain" (get (:headers raw-ring-req) "content-type"))
+                        (edn/read (java.io.PushbackReader. (clojure.java.io/reader (:body raw-ring-req))))
+                        (-> (:params raw-ring-req) shaky/parse-request-params))
         with-source (select-keys parsed-params [:source])]
     (if (seq with-source)
       with-source
