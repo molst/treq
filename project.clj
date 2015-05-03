@@ -7,6 +7,6 @@
   :scm {:name "git" :url "https://github.com/molst/treq"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [ring/ring-core "1.1.7"]
-                 [torpo "0.2-SNAPSHOT"]
-                 [shaky "0.2-SNAPSHOT"]]
+                 [torpo "0.5.0-SNAPSHOT" :exclusions [org.clojure/clojure ring/ring-core]]
+                 [shaky "0.2-SNAPSHOT" :exclusions [org.clojure/clojure ring/ring-core]]]
   :profiles {:dev {:dependencies [[midje "1.5.0"]]}})
