@@ -51,7 +51,10 @@
                                                  (map (fn [access-fn]
                                                         (try {:result (access-fn res selector)}
                                                              (catch Exception e
-                                                               {:error {:tags [:treq/access-fn] :message (str "Failed to apply access function for selector '" selector "', exception: " e)}})))
+                                                               (throw
+                                                                (ex-info "treq failed to resolve"
+                                                                 {:error {:tags [:treq/access-fn] :message (str "Failed to apply access function for selector '" selector "', exception: " e)}}))
+                                                               )))
                                                       access-fns)))]
                           (cond
                            result (update-in res [:result] #((or insert-fn assoc-in) % location result))
